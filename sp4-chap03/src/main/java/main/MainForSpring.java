@@ -24,7 +24,8 @@ public class MainForSpring {
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println("생성시작");
-		String[] classPath = {"classpath:appCtx.xml"};
+		//String[] classPath = {"classpath:conf1.xml", "classpath:conf2.xml"};
+		String classPath = "classpath:configImport.xml";
 		ctx = new GenericXmlApplicationContext(classPath);
 		System.out.println("생성끝");
 		
