@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import spring.AlreadyExistingMemberException;
 import spring.ChangePasswordService;
 import spring.IdPasswordNotMatchingException;
+import spring.MemberDao;
+import spring.MemberListPrinter;
 import spring.MemberNotFoundException;
 import spring.MemberRegisterService;
 import spring.RegisterRequest;
@@ -18,8 +21,13 @@ public class MainForSpring {
 
 	private static ApplicationContext ctx = null;
 	
+	
 	public static void main(String[] args) throws IOException {
-		ctx = new GenericXmlApplicationContext("classpath:appCtx.xml");
+		System.out.println("생성시작");
+		String[] classPath = {"classpath:appCtx.xml"};
+		ctx = new GenericXmlApplicationContext(classPath);
+		System.out.println("생성끝");
+		
 		BufferedReader reader =
 				new BufferedReader(new InputStreamReader(System.in));
 		
@@ -36,6 +44,10 @@ public class MainForSpring {
 			}else if(command.startsWith("change")) {
 				processChangeCommand(command.split(" "));
 				continue;
+			}else if(command.equals("list"))
+			{
+				processListCommand();
+				continue;
 			}
 			printHelp();
 		}
@@ -46,8 +58,9 @@ public class MainForSpring {
 			printHelp();
 			return;
 		}
-		
+		System.out.println("호출 시작");
 		MemberRegisterService regSvc = ctx.getBean("memberRegSvc", MemberRegisterService.class);
+		System.out.println("호출 끝");
 		RegisterRequest req = new RegisterRequest();
 		req.setEmail(arg[1]);
 		req.setName(arg[2]);
@@ -87,6 +100,11 @@ public class MainForSpring {
 		}
 	}
 	
+	private static void processListCommand() {
+		MemberListPrinter listPrinter =
+				ctx.getBean("listPrinter", MemberListPrinter.class);
+		listPrinter.printAll();
+	}
 	private static void printHelp() {
 		System.out.println();
 		System.out.println("잘못된 명령입니다. 아래 명령어 사용법을 확인하세요.");
